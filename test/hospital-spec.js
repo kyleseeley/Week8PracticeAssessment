@@ -52,6 +52,10 @@ describe ('Doctor', function () {
     expect(doctor instanceof User).to.be.true;
   });
 
+  it(`has an array of scheduled appointments`, function () {
+    expect(doctor.appointments).to.exist;
+  })
+
   it('can add accepted insurance', function () {
 
     expect(doctor.acceptsInsurance('BnL Insurance')).to.be.false;
