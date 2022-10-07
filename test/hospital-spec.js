@@ -22,18 +22,29 @@ describe ('User', function () {
 
   it('should get the age of the user', function () {
 
-    // Create a user born on October 17, 1985
-    let user = new User("John Doe", 10, 17, 1985);
 
     const today = new Date();
+
+    // Create a user born on October 17, 1985
+    let user = new User("John Doe", 10, 17, 1985);
     let age = today.getFullYear() - 1985;
 
     if (today.getMonth() < 9 ||
-        today.getMonth() === 9 && today.getDate() < 17) {
+    today.getMonth() === 9 && today.getDate() < 17) {
       age--;
     }
 
     expect(user.getAge()).to.equal(age);
+
+    let user2 = new User('Ryan Schneider', 11, 14, 1900);
+    let age2 = today.getFullYear() - 1900;
+
+    if (today.getMonth() < 10 ||
+        today.getMonth() === 10 && today.getDate() < 14) {
+      age2--;
+    }
+
+    expect(user2.getAge()).to.equal(age2);
   });
 
 });
@@ -54,6 +65,7 @@ describe ('Doctor', function () {
 
   it(`has an array of scheduled appointments`, function () {
     expect(doctor.appointments).to.exist;
+    expect(doctor.appointments).to.eql([])
   })
 
   it('can add accepted insurance', function () {
@@ -68,7 +80,10 @@ describe ('Doctor', function () {
 
   it('can remove accepted insurance', function () {
 
+    doctor.addInsurance('Insurance3');
     doctor.addInsurance('BnL Insurance');
+    doctor.addInsurance('BnL Insurance');
+    doctor.addInsurance('MyInsurance');
 
     expect(doctor.acceptsInsurance('BnL Insurance')).to.be.true;
 
@@ -101,6 +116,21 @@ describe ('Patient', function () {
     patient.setInsurance('BnL Insurance');
 
     expect(patient.getInsurance()).to.equal('BnL Insurance');
+
+  });
+
+  it('also updates old insurance to new insurance', function () {
+
+    expect(patient.insurance).to.be.null;
+
+    patient.setInsurance('BnL Insurance');
+
+    expect(patient.getInsurance()).to.equal('BnL Insurance');
+
+    patient.setInsurance('BrianaInsurance');
+
+    expect(patient.getInsurance()).to.equal('BrianaInsurance');
+    expect(patient.insurance).to.equal('BrianaInsurance')
 
   });
 
@@ -143,7 +173,7 @@ describe ('Appointment', function () {
 
     const hour = 8;  // 8am
     const date = tomorrow.getDate();
-    const month = tomorrow.getMonth();
+    const month = tomorrow.getMonth(); // 0-indexed already
     const year = tomorrow.getFullYear();
 
     const appointment = new Appointment(doctor, patient, month, date, year, hour);
@@ -157,7 +187,7 @@ describe ('Appointment', function () {
 
     const hour = 8;  // 8am
     const date = yesterday.getDate();
-    const month = yesterday.getMonth();
+    const month = yesterday.getMonth(); // 0-indexed already
     const year = yesterday.getFullYear();
 
     try {
@@ -174,7 +204,7 @@ describe ('Appointment', function () {
 
     const hour = 8;  // 8am
     const date = tomorrow.getDate();
-    const month = tomorrow.getMonth();
+    const month = tomorrow.getMonth(); // 0-indexed already
     const year = tomorrow.getFullYear();
 
     try {
@@ -191,13 +221,13 @@ describe ('Appointment', function () {
 
     const hour = 8;  // 8am
     const date = tomorrow.getDate();
-    const month = tomorrow.getMonth();
+    const month = tomorrow.getMonth(); // 0-indexed already
     const year = tomorrow.getFullYear();
 
     patient.setInsurance("Globex Health");
 
     try {
-      const appointment = new Appointment(doctor, patientNoInsurance, month, date, year, hour);
+      const appointment = new Appointment(doctor, patient, month, date, year, hour);
       expect("SHOULD NOT GET HERE").to.equal(false);
     } catch (error) {
       expect(error instanceof AppointmentError).to.equal(true);
@@ -209,7 +239,7 @@ describe ('Appointment', function () {
   it('should allow appointments to be set on different time slots between 8-5', function () {
 
     const date = tomorrow.getDate();
-    const month = tomorrow.getMonth();
+    const month = tomorrow.getMonth(); // 0-indexed already
     const year = tomorrow.getFullYear();
 
     // 8am appointment
@@ -229,7 +259,7 @@ describe ('Appointment', function () {
   it('should not allow appointments to be set before 8am', function () {
 
     const date = tomorrow.getDate();
-    const month = tomorrow.getMonth();
+    const month = tomorrow.getMonth(); // 0-indexed already
     const year = tomorrow.getFullYear();
 
     try {
@@ -246,7 +276,7 @@ describe ('Appointment', function () {
   it('should not allow appointments to be set after 5pm', function () {
 
     const date = tomorrow.getDate();
-    const month = tomorrow.getMonth();
+    const month = tomorrow.getMonth(); // 0-indexed already
     const year = tomorrow.getFullYear();
 
     try {
@@ -263,7 +293,7 @@ describe ('Appointment', function () {
   it('should not allow appointments to be set on overlapping time slots', function () {
 
     const date = tomorrow.getDate();
-    const month = tomorrow.getMonth();
+    const month = tomorrow.getMonth(); // 0-indexed already
     const year = tomorrow.getFullYear();
 
     // 8am appointment
