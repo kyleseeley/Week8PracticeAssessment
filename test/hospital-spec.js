@@ -82,7 +82,6 @@ describe ('Doctor', function () {
 
     doctor.addInsurance('Insurance3');
     doctor.addInsurance('BnL Insurance');
-    doctor.addInsurance('BnL Insurance');
     doctor.addInsurance('MyInsurance');
 
     expect(doctor.acceptsInsurance('BnL Insurance')).to.be.true;
